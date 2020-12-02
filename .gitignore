@@ -1,0 +1,7 @@
+.env
+mlflow_openshift/__pycache__/*
+tests/__pycache__/*
+build/*
+dist/*
+mlflow_openshift.egg_info/*
+tests/config.py
