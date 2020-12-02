@@ -1,0 +1,7 @@
+mlflow==1.13.*
+numpy==1.19.*
+pandas==1.2.*
+pytest==6.2.*
+pytest-cov==2.10.*
+pytest-xdist==2.2.*
+openshift-client==1.0.*

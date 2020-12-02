@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: mlflow
+  app: "${NAME}"
+parameters:
+  - name: NAME
+    displayName: Name of the Application
+    required: true
+  - name: MODEL_URI
+    displayName: mlflow Model URI
+    description: s3 location of model
+    required: true
+  - name: TAGVERSION
+    displayName: tag version
+    description: The version to be used.
+    value: latest
+    required: true
+  - name: MLFLOW_TRACKING_URI
+    description: MLFlow tracking server URL.
+    displayName: MLFlow tracking server URL
+  - name: MLFLOW_S3_ENDPOINT_URL
+    description: MLFlow S3 object store URL.
+    displayName: MLFlow S3 object store URL
+  - name: MLFLOW_TRACKING_USERNAME
+  - name: MLFLOW_TRACKING_PASSWORD
+  - name: AWS_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
+  - name: DOCKER_REGISTRY
+    description: Docker registry.
+    displayName: Docker registry
+  - name: IMAGE
+    description: Image name.
+    displayName: Image name
+  - name: CPU_LIMIT
+  - name: CPU_REQUEST
+  - name: MEM_LIMIT
+  - name: MEM_REQUEST
+  - name: GUNICORN_WORKERS
+  - name: BASIC_AUTH_USERNAME
+  - name: BASIC_AUTH_PASSWORD
+objects:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: "${NAME}"
+    spec:
+      ports:
+        - name: 8087-tcp
+          port: 8087
+          protocol: TCP
+          targetPort: 8087
+      selector:
+        app: "${NAME}"
+        deploymentconfig: "${NAME}"
+      sessionAffinity: None
+      type: ClusterIP
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      name: "${NAME}"
+    spec:
+      port:
+        targetPort: 8087-tcp
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: "${NAME}"
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      name: "${NAME}"
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        app: "${NAME}"
+        deploymentconfig: "${NAME}"
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: "${NAME}"
+            deploymentconfig: "${NAME}"
+            # env: "${ENV}"
+        spec:
+          containers:
+            # https://github.com/xsc/nginx-sidecar-basic-auth
+          - image: xscys/nginx-sidecar-basic-auth
+            imagePullPolicy: IfNotPresent
+            name: auth-proxy
+            ports:
+              - containerPort: 8087
+                protocol: TCP
+            env:
+            - name: FORWARD_PORT
+              value: '8080'
+            - name: CLIENT_MAX_BODY_SIZE
+              value: '50m'
+            - name: BASIC_AUTH_USERNAME
+              value: "${BASIC_AUTH_USERNAME}"
+            - name: BASIC_AUTH_PASSWORD
+              value: "${BASIC_AUTH_PASSWORD}"
+          - image: "${DOCKER_REGISTRY}/${IMAGE}:${TAGVERSION}"
+            resources:
+              limits:
+                cpu: ${CPU_LIMIT}
+                memory: ${MEM_LIMIT}
+              requests:
+                cpu: ${CPU_REQUEST}
+                memory: ${MEM_REQUEST}
+            name: "model-serving"
+            command: [ "mlflow", "models", "serve", "-m", "${MODEL_URI}", "--no-conda", "--port", "8080", "--host", "0.0.0.0", "--workers", "${GUNICORN_WORKERS}"]
+            env:
+              - name: MLFLOW_TRACKING_URI
+                value: ${MLFLOW_TRACKING_URI}
+              - name: MLFLOW_TRACKING_USERNAME
+                value: ${MLFLOW_TRACKING_USERNAME}
+              - name: MLFLOW_TRACKING_PASSWORD
+                value: ${MLFLOW_TRACKING_PASSWORD}
+              - name: AWS_ACCESS_KEY_ID
+                value: ${AWS_ACCESS_KEY_ID}
+              - name: AWS_SECRET_ACCESS_KEY
+                value: ${AWS_SECRET_ACCESS_KEY}
+              - name: MLFLOW_S3_ENDPOINT_URL
+                value: ${MLFLOW_S3_ENDPOINT_URL}
+          restartPolicy: Always
