@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mlflow_openshift",
-    version="0.0.5",
+    version="0.0.2",
     author="sklingel",
     description="MLFlow Openshift Deployment Package",
     long_description=long_description,
@@ -23,7 +23,6 @@ setuptools.setup(
     install_requires=[
         'mlflow>=1.13.*',
         'numpy>=1.19.*',
-        'pandas>=1.2.*',
         'openshift-client>=1.0.*'
     ],
     entry_points={"mlflow.deployments": "openshift=mlflow_openshift"}

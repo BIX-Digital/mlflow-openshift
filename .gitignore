@@ -5,5 +5,3 @@ build/*
 dist/*
 mlflow_openshift.egg_info/*
 tests/config.py
-Jenkinsfile
-sonar-project.properties
