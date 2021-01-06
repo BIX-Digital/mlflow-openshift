@@ -130,11 +130,11 @@ def check_succesful_deployment(name, route_host, auth_user, auth_password):
     while not check_completed:
         pod_obj = get_pod_info_from_app_name(name)
         try:
-            container_statuses = pod_obj.as_dict()["status"]["containerStatuses"]
+            container_statuses = pod_obj.model.status.containerStatuses
 
             for container_status in container_statuses:
-                if container_status['name'] == "model-serving":
-                    container_state = container_status['state'].keys()
+                if container_status.name == "model-serving":
+                    container_state = container_status.state.keys()
                     if (TERMINATED_STATUS in container_state):
                         error_log = ""
                         pod_logs = pod_obj.logs()
@@ -155,11 +155,11 @@ def check_succesful_deployment(name, route_host, auth_user, auth_password):
                             check_completed = True
 
                     elif WAITING_STATUS in container_state:
-                        watiting_status = container_status['state'][WAITING_STATUS]
+                        watiting_status = container_status.state[WAITING_STATUS]
                         if "ImagePullBackOff" in watiting_status["reason"]:
                             raise MlflowException(
                                 "Image cannot be found: " +
-                                container_status['state'][WAITING_STATUS]["message"]
+                                container_status.state[WAITING_STATUS]["message"]
                             )
                     else:
                         continue
@@ -182,7 +182,7 @@ def get_route_name(name):
     """
     try:
         route_obj = oc.selector('routes', labels={"app": name}).object()
-        return route_obj.as_dict()['spec']['host']
+        return route_obj.model.spec.host
     except OpenShiftPythonException:
         raise MlflowException(f"could not find route information for {name}")
 
@@ -198,16 +198,15 @@ def get_authentication_info(name):
         tuple: authentication user, authentication password
     """
     pod_obj = get_pod_info_from_app_name(name)
-    pod_info = pod_obj.as_dict()
     auth_user = ""
     auth_password = ""
-    for container_info in pod_info["spec"]["containers"]:
-        if container_info["name"] == "auth-proxy":
-            for env_var in container_info["env"]:
-                if env_var["name"] == "BASIC_AUTH_USERNAME":
-                    auth_user = env_var["value"]
-                elif env_var["name"] == "BASIC_AUTH_PASSWORD":
-                    auth_password = env_var["value"]
+    for container_info in pod_obj.model.spec.containers:
+        if container_info.name == "auth-proxy":
+            for env_var in container_info.env:
+                if env_var.name == "BASIC_AUTH_USERNAME":
+                    auth_user = env_var.value
+                elif env_var.name == "BASIC_AUTH_PASSWORD":
+                    auth_password = env_var.value
                 else:
                     continue
     return auth_user, auth_password
@@ -239,7 +238,7 @@ def get_pod_info_from_app_name(name):
         else:
             for pod_obj in pod_objs:
                 # look for the newest pod if more then one is present
-                start_time = pod_obj.as_dict()["status"]["startTime"]
+                start_time = pod_obj.model.status.startTime
                 start_time_dt = datetime.datetime.strptime(
                     start_time, "%Y-%m-%dT%H:%M:%SZ"
                 )
