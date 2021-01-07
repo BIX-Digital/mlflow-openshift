@@ -37,7 +37,6 @@ def apply_deployment_config(config, template):
         template (str): filepath to openshift deployment template yaml.
     """
     package_path = os.path.abspath(__file__)
-    print(package_path)
     with open(f"{package_path}/templates/deploy_with_auth.yml") as f:
         template_dict = yaml.safe_load(f)
     template_obj = oc.APIObject(template_dict)
