@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mlflow_openshift",
-    version="0.0.6",
+    version="0.1.1",
     author="sklingel",
-    description="MLFlow Openshift Deployment Package",
+    description="MLFlow Openshift Deployment Plugin",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/BIX-Digital/mlflow-openshift",
