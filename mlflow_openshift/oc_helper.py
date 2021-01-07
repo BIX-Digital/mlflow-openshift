@@ -3,6 +3,7 @@ import time
 import logging
 import yaml
 import datetime
+import pathlib
 
 import openshift as oc
 from openshift.model import OpenShiftPythonException
@@ -35,7 +36,8 @@ def apply_deployment_config(config, template):
             e.g. --param=NAME=<some-name>
         template (str): filepath to openshift deployment template yaml.
     """
-    with open("mlflow_openshift/templates/deploy_with_auth.yml") as f:
+    package_path = pathlib.Path(__file__).parent.absolute()
+    with open(f"{package_path}/templates/deploy_with_auth.yml") as f:
         template_dict = yaml.safe_load(f)
     template_obj = oc.APIObject(template_dict)
 
