@@ -36,9 +36,6 @@ def target_help():
         "Expected environmental variables are identical to an mlflow setup with S3: \n\n"
         "   AWS_ACCESS_KEY_ID=<>\n"
         "   AWS_SECRET_ACCESS_KEY=<>\n"
-        "   MLFLOW_TRACKING_USERNAME=<>\n"
-        "   MLFLOW_TRACKUNG_PASSWORD=<>\n"
-        "   MLFLOW_TRACKING_URI=<>\n"
         "   MLFLOW_S3_ENDPOINT_URL<>\n\n"
 
         "mlflow deployments create \n"
@@ -48,6 +45,8 @@ def target_help():
         "   Mandatory config items, besides --model-uri and --name, are: \n"
         "       --config docker_registry \n"
         "       --config image \n"
+        "       --config auth_user \n"
+        "       --config auth_password \n"
         "   Specifying the docker registry url and the image name. \n"
         "   Information about additional config items, like cpu or memory limit/requests, "
         "   gunicorn-worksers can be found in the official documentation. \n\n"
@@ -101,7 +100,8 @@ class OpenshiftAPIPlugin(BaseDeploymentClient):
         Returns:
             dict: {'name': <name>, 'flavor': <flavor>}
         """
-        if not all(key in config for key in ("image", "docker_registry", "tag")):
+        if not all(key in config for key in (
+            "image", "docker_registry", "tag", "auth_user", "auth_password")):
             raise MlflowException(
                 "not all mandatory config items (image, docker_registry, tag) "
                 "are provided."
@@ -170,7 +170,7 @@ class OpenshiftAPIPlugin(BaseDeploymentClient):
             else:
                 raise MlflowException(
                     "Not all of the necessary *config* items for updating are provided. "
-                    "You need to provide: image, docker_registry and tag"
+                    "You need to provide: image, docker_registry, tag, auth_user and auth_password"
                 )
 
         if model_uri:

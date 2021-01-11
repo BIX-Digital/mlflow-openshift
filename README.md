@@ -23,9 +23,6 @@ Mlflow deployment plugin for openshift. This plugin offers the possibility to de
     ```
     AWS_ACCESS_KEY_ID=<>
     AWS_SECRET_ACCESS_KEY=<>
-    MLFLOW_TRACKING_USERNAME=<>
-    MLFLOW_TRACKING_PASSWORD=<>
-    MLFLOW_TRACKING_URI=<>
     MLFLOW_S3_ENDPOINT_URL=<>
     ``` 
 
@@ -42,12 +39,12 @@ Mandatory config items
 --docker-registry
 --image
 --tag
+--auth_user
+--auth_password
 ```
 
 Optional config items:
 ```
---auth_user -> default: `MLFLOW_TRACKING_USERNAME`
---auth_password -> default: `MLFLOW_TRACKING_PASSWORD`
 --cpu_limit -> default: `1`
 --cpu_request -> default: `100m`
 --mem_limit -> default: `512Mi`

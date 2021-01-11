@@ -4,7 +4,8 @@ import string
 
 from mlflow.deployments import get_deploy_client
 
-from .config import IMAGE, DOCKER_REGISTRY, APP_NAME, TAG, MODEL_URI_1
+from .config import IMAGE, DOCKER_REGISTRY, APP_NAME, TAG, MODEL_URI_1, \
+    TEST_USER, TEST_PASSWORD
 
 
 class MLflowDeploymenGet(unittest.TestCase):
@@ -21,7 +22,9 @@ class MLflowDeploymenGet(unittest.TestCase):
             config={
                 "docker_registry": DOCKER_REGISTRY,
                 "image": IMAGE,
-                "tag": TAG
+                "tag": TAG,
+                "auth_user": TEST_USER,
+                "auth_password": TEST_PASSWORD
             }
         )
 

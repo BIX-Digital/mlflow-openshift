@@ -8,7 +8,8 @@ import pandas as pd
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from .config import IMAGE, DOCKER_REGISTRY, TAG, MODEL_URI_1, APP_NAME
+from .config import IMAGE, DOCKER_REGISTRY, TAG, MODEL_URI_1, APP_NAME, \
+    TEST_USER, TEST_PASSWORD
 
 
 class MLflowDeploymenPredict(unittest.TestCase):
@@ -24,7 +25,9 @@ class MLflowDeploymenPredict(unittest.TestCase):
             config={
                 "docker_registry": DOCKER_REGISTRY,
                 "image": IMAGE,
-                "tag": TAG
+                "tag": TAG,
+                "auth_user": TEST_USER,
+                "auth_password": TEST_PASSWORD
             }
         )
 

@@ -22,18 +22,12 @@ def set_config_defaults(config):
         dict: patched config argument with default values
     """
     try:
-        config["mlflow_tracking_uri"] = os.environ["MLFLOW_TRACKING_URI"]
         config["mlflow_s3_endpoint_url"] = os.environ["MLFLOW_S3_ENDPOINT_URL"]
-        config["mlflow_tracking_username"] = os.environ["MLFLOW_TRACKING_USERNAME"]
-        config["mlflow_tracking_password"] = os.environ["MLFLOW_TRACKING_PASSWORD"]
         config["aws_access_key_id"] = os.environ["AWS_ACCESS_KEY_ID"]
         config["aws_secret_access_key"] = os.environ["AWS_SECRET_ACCESS_KEY"]
     except KeyError:
         required_envs = [
-            "MLFLOW_TRACKING_URI",
             "MLFLOW_S3_ENDPOINT_URL",
-            "MLFLOW_TRACKING_USERNAME",
-            "MLFLOW_TRACKING_PASSWORD",
             "AWS_ACCESS_KEY_ID",
             "AWS_SECRET_ACCESS_KEY"
         ]
@@ -44,17 +38,11 @@ def set_config_defaults(config):
                 break
         raise MlflowException(f"Required environment variables {env} is not set.")
 
-    if "auth-user" not in config:
-        logger.info(
-            "`auth-user` not provided... setting it to env MLFLOW_TRACKING_USERNAME\n"
-        )
-        config["basic_auth_username"] = os.environ["MLFLOW_TRACKING_USERNAME"]
-
-    if "auth-password" not in config:
-        logger.info(
-            "`auth-password` not provided... setting it to env MLFLOW_TRACKING_PASSWORD\n"
-        )
-        config["basic_auth_password"] = os.environ["MLFLOW_TRACKING_PASSWORD"]
+    # rename for nginx auth proxy
+    config["basic_auth_username"] = config["auth_user"]
+    config["basic_auth_password"] = config["auth_password"]
+    del config["auth_user"]
+    del config["auth_password"]
 
     if "gunicorn_workers" not in config:
         config["gunicorn_workers"] = GUNICORN_WORKERS
