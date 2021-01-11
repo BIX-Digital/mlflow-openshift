@@ -6,7 +6,8 @@ import string
 from mlflow.deployments import get_deploy_client
 from mlflow.exceptions import MlflowException
 
-from .config import MODEL_URI_1, IMAGE, DOCKER_REGISTRY, TAG, APP_NAME
+from .config import MODEL_URI_1, IMAGE, DOCKER_REGISTRY, TAG, APP_NAME, \
+    TEST_USER, TEST_PASSWORD
 
 
 class MLflowDeploymentUnitTest(unittest.TestCase):
@@ -38,7 +39,9 @@ class MLflowDeploymentUnitTest(unittest.TestCase):
                 config={
                     "docker_registry": DOCKER_REGISTRY,
                     "image": IMAGE,
-                    "tag": TAG
+                    "tag": TAG,
+                    "auth_user": TEST_USER,
+                    "auth_passowrd": TEST_PASSWORD
                 }
             )
 
@@ -62,7 +65,9 @@ class MLflowDeploymentCreateError(unittest.TestCase):
                 config={
                     "docker_registry": DOCKER_REGISTRY,
                     "image": IMAGE,
-                    "tag": TAG
+                    "tag": TAG,
+                    "auth_user": TEST_USER,
+                    "auth_password": TEST_PASSWORD
                 }
             )
         self.assertTrue(
@@ -76,6 +81,8 @@ class MLflowDeploymentCreateError(unittest.TestCase):
                 config={
                     "docker_registry": DOCKER_REGISTRY,
                     "image": "x" + IMAGE,
-                    "tag": TAG
+                    "tag": TAG,
+                    "auth_user": TEST_USER,
+                    "auth_password": TEST_PASSWORD
                 }
             )

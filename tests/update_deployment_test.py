@@ -6,7 +6,7 @@ from mlflow.deployments import get_deploy_client
 from mlflow.exceptions import MlflowException
 
 from .config import IMAGE, DOCKER_REGISTRY, MODEL_URI_1, TAG, \
-    APP_NAME, MODEL_URI_2
+    APP_NAME, MODEL_URI_2, TEST_USER, TEST_PASSWORD
 
 
 class MLflowDeploymenUpdate(unittest.TestCase):
@@ -22,7 +22,9 @@ class MLflowDeploymenUpdate(unittest.TestCase):
             config={
                 "docker_registry": DOCKER_REGISTRY,
                 "image": IMAGE,
-                "tag": TAG
+                "tag": TAG,
+                "auth_user": TEST_USER,
+                "auth_password": TEST_PASSWORD
             }
         )
 
