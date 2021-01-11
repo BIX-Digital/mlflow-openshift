@@ -16,14 +16,9 @@ parameters:
     description: The version to be used.
     value: latest
     required: true
-  - name: MLFLOW_TRACKING_URI
-    description: MLFlow tracking server URL.
-    displayName: MLFlow tracking server URL
   - name: MLFLOW_S3_ENDPOINT_URL
     description: MLFlow S3 object store URL.
     displayName: MLFlow S3 object store URL
-  - name: MLFLOW_TRACKING_USERNAME
-  - name: MLFLOW_TRACKING_PASSWORD
   - name: AWS_ACCESS_KEY_ID
   - name: AWS_SECRET_ACCESS_KEY
   - name: DOCKER_REGISTRY
@@ -123,12 +118,6 @@ objects:
             name: "model-serving"
             command: [ "mlflow", "models", "serve", "-m", "${MODEL_URI}", "--no-conda", "--port", "8080", "--host", "0.0.0.0", "--workers", "${GUNICORN_WORKERS}"]
             env:
-              - name: MLFLOW_TRACKING_URI
-                value: ${MLFLOW_TRACKING_URI}
-              - name: MLFLOW_TRACKING_USERNAME
-                value: ${MLFLOW_TRACKING_USERNAME}
-              - name: MLFLOW_TRACKING_PASSWORD
-                value: ${MLFLOW_TRACKING_PASSWORD}
               - name: AWS_ACCESS_KEY_ID
                 value: ${AWS_ACCESS_KEY_ID}
               - name: AWS_SECRET_ACCESS_KEY
