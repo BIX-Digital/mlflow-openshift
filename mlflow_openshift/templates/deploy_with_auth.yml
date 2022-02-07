@@ -124,4 +124,6 @@ objects:
                 value: ${AWS_SECRET_ACCESS_KEY}
               - name: MLFLOW_S3_ENDPOINT_URL
                 value: ${MLFLOW_S3_ENDPOINT_URL}
+              - name: MODEL_URI
+                value: ${MODEL_URI}
           restartPolicy: Always
