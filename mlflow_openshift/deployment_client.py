@@ -100,8 +100,8 @@ class OpenshiftAPIPlugin(BaseDeploymentClient):
         Returns:
             dict: {'name': <name>, 'flavor': <flavor>}
         """
-        if not all(key in config for key in (
-            "image", "docker_registry", "tag", "auth_user", "auth_password")):
+        if not all(key in config for key in ("image", "docker_registry",
+                                             "tag", "auth_user", "auth_password")):
             raise MlflowException(
                 "not all mandatory config items (image, docker_registry, tag) "
                 "are provided."
