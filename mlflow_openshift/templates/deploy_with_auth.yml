@@ -75,7 +75,10 @@ objects:
         deploymentconfig: "${NAME}"
       strategy:
         activeDeadlineSeconds: 21600
-        resources: {}
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
         rollingParams:
           intervalSeconds: 1
           maxSurge: 25%
@@ -107,6 +110,10 @@ objects:
               value: "${BASIC_AUTH_USERNAME}"
             - name: BASIC_AUTH_PASSWORD
               value: "${BASIC_AUTH_PASSWORD}"
+            resources:
+              limits:
+                cpu: 50m
+                memory: 64Mi
           - image: "${DOCKER_REGISTRY}/${IMAGE}:${TAGVERSION}"
             resources:
               limits:
