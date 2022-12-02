@@ -1,3 +1,5 @@
+**_IMPORTANT NOTE:_**  This package is no longer maintained and not adapted for mlflow>2.*. 
+
 # Openshift Mlflow Deployment Plugin
 Mlflow deployment plugin for openshift. This plugin offers the possibility to deploy mlflow packed models into openshift using the regular `mlflow deployment` command line interface.
 
